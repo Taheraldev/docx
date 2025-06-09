@@ -1,20 +1,22 @@
-# استخدام صورة أساسية من Python
-FROM python:3.9-slim
+# استخدم صورة بايثون الرسمية
+FROM python:3.10-slim
 
-# تعيين مجلد العمل
+# تثبيت tesseract OCR و poppler-utils لتحويل PDF إلى صورة
+RUN apt-get update && \
+    apt-get install -y tesseract-ocr poppler-utils && \
+    rm -rf /var/lib/apt/lists/*
+
+# أنشئ مجلّد العمل
 WORKDIR /app
 
-# تحديث pip إلى أحدث إصدار
-RUN pip install --upgrade pip
-
-# نسخ الملفات المطلوبة
+# انسخ ملفات المشروع وثبّت المتطلبات
 COPY requirements.txt .
-
-# تثبيت المتطلبات
 RUN pip install --no-cache-dir -r requirements.txt
 
-# نسخ باقي الملفات
-COPY . .
+COPY bot.py .
 
-# تشغيل البوت
+# ضع التوكن كمتغيّر بيئي
+ENV TOKEN="6334414905:AAFK59exfc4HuQQJdxk-mwONn5K4yODCIJg"
+
+# شغّل البوت
 CMD ["python", "bot.py"]
